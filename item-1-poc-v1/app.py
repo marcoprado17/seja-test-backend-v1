@@ -5,10 +5,12 @@ from utils import get_response
 
 load_dotenv()
 
-if 'conversation' not in st.session_state:
-    st.session_state['conversation'] =None
+if 'llm' not in st.session_state:
+    st.session_state['llm'] = None
 if 'messages' not in st.session_state:
     st.session_state['messages'] =[]
+if 'agent' not in st.session_state:
+    st.session_state['agent'] = None
 
 st.set_page_config(page_title="Assistente de mapas da cidade de São Paulo", page_icon=":robot_face:")
 st.markdown("<h1 style='text-align: center;'>Assistente de mapas da cidade de São Paulo</h1>", unsafe_allow_html=True)
@@ -22,8 +24,8 @@ with container:
         submit_button = st.form_submit_button(label='Enviar')
 
         if submit_button:
-            st.session_state['messages'].append(user_input)
             model_response=get_response(user_input)
+            st.session_state['messages'].append(user_input)
             st.session_state['messages'].append(model_response)
 
             with response_container:
