@@ -3,3 +3,4 @@ streamlit==1.25.0
 streamlit_chat=0.1.1
 python-dotenv=1.0.0
 pandas=1.5.3
+text-generation=0.6.0

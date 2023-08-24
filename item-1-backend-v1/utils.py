@@ -11,7 +11,11 @@ import pandas as pd
 import consts
 import os
 
-_template = """O texto a seguir é uma conversa amigável em portugês (Brasil) entre um humano e uma assistente AI. Se a assistente AI não souber a resposta à pergunta, ela diz que não sabe. A assistente deve completar o texto respondendo uma única vez. A assistente não deve escrever o texto do humano. O sistema pode fazer questões e respondê-las, se o usuário já tiver respondido uma pergunta, a assistente AI deve responder de acordo com a resposta do usuário.
+_template = """O texto a seguir é uma conversa amigável em portugês (Brasil) entre um humano e uma assistente AI. 
+Se a assistente AI não souber a resposta à pergunta, ela diz que não sabe. 
+A assistente deve completar o texto respondendo uma única vez. 
+A assistente não deve escrever o texto do humano. 
+O sistema pode fazer questões e respondê-las, se o usuário já tiver respondido uma pergunta, a assistente AI deve responder de acordo com a resposta do usuário e não pelo sistema.
 
 Conversa atual:
 
@@ -28,7 +32,12 @@ messages_db = {}
 llm = None
 agent = None
 
-def _get_llm():
+def _get_llm(just_return_open_ai = False):
+    if just_return_open_ai:
+        return OpenAI(
+            temperature=0.01,
+            model_name=os.environ['OPENAI_LLM_MODEL_NAME']
+        )
     global llm
     if llm is None:
         llm_type = os.environ['LLM_TYPE']
@@ -49,14 +58,10 @@ def _get_llm():
             )
         elif llm_type == consts.REMOTE_LLAMA_LLM_TYPE:
             llm = HuggingFaceTextGenInference(
-                inference_server_url="http://localhost:8010/",
-                max_new_tokens=512,
-                top_k=10,
-                top_p=0.95,
-                typical_p=0.95,
+                inference_server_url=os.environ['LLM_INSTANCE_URL'],
                 temperature=0.01,
-                repetition_penalty=1.03,
             )
+            llm.client.headers = {"Authorization": f"Bearer {os.environ['HUGGINGFACEHUB_API_TOKEN']}"}
         else:
             raise Exception("Invalid LLM type")
     return llm
@@ -66,7 +71,7 @@ def _get_agent():
     if agent is None:
         df = pd.read_excel('data/sp_data.xlsx')
         
-        llm = _get_llm()
+        llm = _get_llm(just_return_open_ai=os.environ['USE_OPENAI_FOR_AGENT'].lower() == "true")
         
         agent = create_pandas_dataframe_agent(llm, df, verbose=True)
     return agent
