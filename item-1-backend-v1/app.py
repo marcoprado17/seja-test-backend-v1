@@ -54,5 +54,9 @@ async def respond():
 def index():
     return 'Hello World!'
 
+@app.route('/abc')
+def index():
+    return 'Hello abc!'
+
 if __name__ == '__main__':
     app.run(threaded=True)

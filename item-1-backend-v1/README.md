@@ -42,3 +42,64 @@ cd ~/seja-test-backend-v1/item-1-backend-v1;
 touch .env;
 nano .env;
 ```
+
+Test web server with gunicorn:
+
+```
+python3.11 -m gunicorn --bind 127.0.0.1:5000 app:app;
+```
+
+Create the service on systemd:
+
+```
+sudo nano /etc/systemd/system/app.service;
+```
+
+O conteúdo é o seguinte:
+
+```
+[Unit]
+Description=Gunicorn daemon to serve my flaskapp
+After=network.target
+[Service]
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/seja-test-backend-v1/item-1-backend-v1
+ExecStart=python3.11 -m gunicorn --bind 127.0.0.1:5000 app:app
+[Install]
+WantedBy=multi-user.target
+```
+
+```
+sudo systemctl start app;
+sudo systemctl enable app;
+sudo systemctl status app;
+```
+
+Install nginx:
+
+```
+sudo apt-get install nginx;
+```
+
+Altere no nginx o server_name para a url do servidor e faça o proxy:
+
+```
+sudo nano /etc/nginx/sites-enabled/default;
+```
+
+Proxy:
+
+```
+proxy_pass http://127.0.0.1:5000;
+```
+
+Restart o nginx:
+
+```
+sudo systemctl restart nginx;
+```
+
+Gerar https:
+
+[https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-22-04](https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-22-04)
