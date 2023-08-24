@@ -2,6 +2,10 @@
 
 This is a flask web server that integrates the telegram bot with an llm. Different llms can be used based on environment variables.
 
+## TODO's
+
+* Answer the telegram asynchronously.
+
 ## Setup on ubuntu server
 
 Clone this repo:
@@ -36,6 +40,8 @@ python3.11 -m pip install -r requirements.txt;
 ```
 
 Create the .env:
+
+Não se esqueça de atualizar o token do telegram.
 
 ```
 cd ~/seja-test-backend-v1/item-1-backend-v1;
