@@ -3,7 +3,7 @@ from langchain.chains import ConversationChain
 from langchain.chains.conversation.memory import ConversationBufferMemory
 # TODO: Find a way to avoid token overflow and keep track of the conversation
 from langchain.prompts.prompt import PromptTemplate
-from langchain.llms import CTransformers
+from langchain.llms import CTransformers, HuggingFaceTextGenInference
 from langchain import OpenAI
 from langchain.agents import create_pandas_dataframe_agent
 from langchain.chains import SequentialChain
@@ -29,7 +29,7 @@ def _get_llm():
 
         if llm_type == consts.OPENAI_LLM_TYPE:
             st.session_state['llm'] = OpenAI(
-                temperature=0.1,
+                temperature=0.01,
                 model_name=os.environ['OPENAI_LLM_MODEL_NAME']
             )
         elif llm_type == consts.LOCAL_LLAMA_LLM_TYPE:
@@ -40,6 +40,16 @@ def _get_llm():
                     'max_new_tokens': 1024,
                     'temperature': 0.01
                 }
+            )
+        elif llm_type == consts.REMOTE_LLAMA_LLM_TYPE:
+            st.session_state['llm'] = HuggingFaceTextGenInference(
+                inference_server_url="http://localhost:8010/",
+                max_new_tokens=512,
+                top_k=10,
+                top_p=0.95,
+                typical_p=0.95,
+                temperature=0.01,
+                repetition_penalty=1.03,
             )
         else:
             raise Exception("Invalid LLM type")
