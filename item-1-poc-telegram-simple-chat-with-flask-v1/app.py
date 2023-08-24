@@ -23,8 +23,7 @@ async def respond():
     text = update.message.text.encode('utf-8').decode()
 
     response = get_response(text)
-    async with bot:
-        await bot.send_message(text=response, chat_id=chat_id)
+    await bot.send_message(text=response, chat_id=chat_id)
 
     return 'ok'
 
