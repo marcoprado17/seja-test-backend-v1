@@ -34,3 +34,11 @@ Install the python packages:
 cd ~/seja-test-backend-v1/item-1-backend-v1;
 python3.11 -m pip install -r requirements.txt;
 ```
+
+Create the .env:
+
+```
+cd ~/seja-test-backend-v1/item-1-backend-v1;
+touch .env;
+nano .env;
+```
