@@ -55,7 +55,7 @@ def index():
     return 'Hello World!'
 
 @app.route('/abc')
-def index():
+def index_abc():
     return 'Hello abc!'
 
 if __name__ == '__main__':
